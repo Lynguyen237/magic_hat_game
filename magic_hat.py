@@ -12,22 +12,35 @@ import time
 
 questions = ["What’s the best thing you’ve got going on in your life at the moment?",
              "What incredibly common thing have you never done?",
-             "What has taken you the longest to get good or decent at?"]
+             "What has taken you the longest to get good or decent at?",
+             "abc",
+             "xyz",
+             "lmnop"]
 
+# random.shuffle(questions)
 
 class MagicHat:
 
+
     def __init__(self, question_bank):
         self.question_bank = question_bank
+        random.shuffle(self.question_bank) #Shuffle the list of questions
+        self.unasked_questions = question_bank.copy()
         self.thread = None # Start a thread variable to activate periodic questions later
         self.asked_questions = None
 
+
     def ask(self):
         """ Ask the hat to give a random question """
-        print("Here is your question from the Magic Hat:")
-        print(random.choice(self.unasked_questions), "\n")
+        # Restock the questions if all the questions have been asked
+        if not self.unasked_questions:
+            self.unasked_questions = self.question_bank.copy()
+            random.shuffle(self.unasked_questions) # Shuffle the list of unasked questions again
 
-    
+        print("Here is your question from the Magic Hat:")
+        print(self.unasked_questions.pop(), "\n")
+
+
     def ask_at_interval(self, seconds=30):
         """ 
         Ask the hat to give a question every x seconds using
