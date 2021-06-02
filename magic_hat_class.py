@@ -6,9 +6,9 @@ Ask the hat to turn off the periodic questions
 The hat should not repeat questions that have been asked before (unless they've all been asked already)
 """
 
-import random, threading
+import random
+import threading
 import time
-import json
 
 
 class MagicHat:
@@ -21,10 +21,9 @@ class MagicHat:
         """
         self.question_bank = question_bank
         self.asked_questions = []
-        self.thread = None # Start a thread variable to activate periodic questions later
+        self.thread = None  # Start a thread variable to activate periodic questions later
 
-        random.shuffle(self.question_bank) #Shuffle the list of questions
-
+        random.shuffle(self.question_bank)  # Shuffle the list of questions
 
     def ask(self):
         """ 
@@ -34,27 +33,28 @@ class MagicHat:
         # by copying questions from the asked_questions list
         if not self.question_bank:
             self.question_bank = self.asked_questions.copy()
-            self.asked_questions = [] # Empty the asked_questions list to start a new round
-            random.shuffle(self.question_bank) # Shuffle the list of questions again
+            self.asked_questions = []  # Empty the asked_questions list to start a new round
+            random.shuffle(self.question_bank)  # Shuffle the list of questions again
 
-        print("Here is your question from the Magic Hat:", "\n")
+        print("Here is your question from the Magic Hat:")
         # Select the last question in the question bank, which is already randomly shuffled.
         # Pop the selected question from the bank and add it to the list of asked_question.
         selected_question = self.question_bank.pop() 
         self.asked_questions.append(selected_question)
         print(selected_question, "\n")
 
-
     def ask_at_interval(self, seconds=30):
         """ 
         Ask the hat to give a question every x seconds using
         Python Timer Objects https://docs.python.org/3/library/threading.html#timer-objects.
         The default interval if no argument is provided is 30 seconds
-        """   
-        self.ask()
-        self.thread = threading.Timer(seconds, self.ask_at_interval, [seconds])
-        self.thread.start() #Start the thread running periodic questions
-        
+        """
+        if seconds < 5:
+            print("Please enter a value greater than 4 seconds. For example: mh.ask_at_interval(10).")
+        else:
+            self.ask()
+            self.thread = threading.Timer(seconds, self.ask_at_interval, [seconds])
+            self.thread.start()  # Start the thread running periodic questions
 
     def stop(self):
         """ 
@@ -63,38 +63,18 @@ class MagicHat:
         if not self.thread:
             print("You have not asked the Magic Hat to ask periodic questions yet so there is nothing to stop.")
         else:
-            self.thread.cancel() #Stop the thread running periodic questions
+            print("Sure thing. Magic Hat will stop giving you questions.")
+            self.thread.cancel()  # Stop the thread running periodic questions
 
     def help(self):
         """ Display instructions for user """
         print("USER GUIDE")
         print("- Type mh.ask() if you would like the Magic Hat to give you a question.")
         print("- Type mh.ask_at_interval() if you would like Magic Hat to give you a question every 30 seconds.")
-        print("- If you would like to change the interval, type mh.ask_at_interval(x) where x is the number of seconds.")
-        print("     For example: mh.ask_at_interval(15) will ask a question every 15 seconds")
+        print("     + To change the interval, type mh.ask_at_interval(x) where x is the number of seconds.")
+        print("     + For example: mh.ask_at_interval(15) will ask a question every 15 seconds")
         print("- Type mh.stop() if you would like the Magic Hat to stop periodic questions.")
-        print("- Type mh.help() to display the user guide again")
-
-
-def play_magic_hat():
-    """ Play the magic hat game """
-
-    # Get the question bank
-    with open('question_bank.json') as f:
-        data = json.load(f)
-        question_bank = data['questions']
-    
-    # Create an instance of the magic hat class using the question bank
-    mh = MagicHat(question_bank)
-
-    print("Welcome to the Magic Hat game!", "\n")
-    mh.help()
-
-def main():
-    play_magic_hat()
-
-if __name__ == "__main__":
-    main()
+        print("- Type mh.help() any time to display the user guide again.", "\n")
         
 
 
