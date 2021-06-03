@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import re #regular expression
+import re  # regular expression
 import json
 
 
@@ -20,16 +20,16 @@ question_p_tags = soup.findAll('p', text=re.compile('\d+\.'))
 # A list of questions
 questions = []
 
-for p_tag in question_p_tags[:3]:
-    text = p_tag.get_text() # Extract the text from the p_tag
-    text = re.sub(r'\d+\.+ ', '', text) # Remove the number & the period at the beginning
+for p_tag in question_p_tags:
+    text = p_tag.get_text()  # Extract the text from the p_tag
+    text = re.sub(r'\d+\.+ ', '', text)  # Remove the number & the period before the question
     questions.append(text)
 
 
 # Export the question to a json file to use in the game
 question_bank = {'questions': questions}
 
-out_file = open("question_bank.json", "w")
+out_file = open("data/question_bank.json", "w")
 json.dump(question_bank, out_file, indent=4)
 out_file.close()
 
